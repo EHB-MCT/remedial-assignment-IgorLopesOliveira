@@ -28,6 +28,8 @@ fetch('http://localhost:8080/api/products')
     data.forEach(product => {
       const div = document.createElement('div');
       div.className = 'product';
+      console.log('Product ID:', product._id);
+
       div.innerHTML = `
         <h3>${product.name}</h3>
         <p>${product.description}</p>
@@ -77,16 +79,19 @@ function loadInventory() {
 function buyProduct(productId) {
   fetch(`http://localhost:8080/api/market/buy/${productId}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId: USER_ID, quantity: 1 })
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      userId: 'USER123',
+      quantity: 1
+    })
   })
   .then(res => res.json())
-  .then(data => {
-    alert(data.success ? 'Purchase complete!' : data.error);
-    loadWallet();
-    loadInventory();
-  });
+  .then(data => console.log('✅ Bought:', data))
+  .catch(err => console.error('❌ Fetch error:', err));
 }
+
 
 // Sell product
 function sellProduct(productId, quantity) {

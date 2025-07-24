@@ -10,12 +10,12 @@ const userSchema = new mongoose.Schema({
     totalSpent: Number,
   }],
   transactionHistory: [{
-    type: String,
-    product: String,
-    quantity: Number,
-    price: Number,
-    total: Number,
-    date: Date,
+    type: { type: String, required: true },
+    product: { type: String, required: true },
+    quantity: { type: Number, required: true },
+    price: { type: Number, required: true },
+    total: { type: Number, required: true },
+    date: { type: Date, default: Date.now },
   }],
 });
 
