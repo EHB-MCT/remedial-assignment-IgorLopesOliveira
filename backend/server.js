@@ -9,8 +9,9 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());
 
-const productRoutes = require('./routes/productRoutes');
-app.use('/api/products', productRoutes);
+app.use('/api/products', require('./routes/productRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/market', require('./routes/marketRoutes'));
 
 mongoose
   .connect(process.env.MONGO_URI)
