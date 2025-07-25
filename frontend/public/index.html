@@ -1,124 +1,158 @@
-<!-- ...existing code... -->
-<div id="wallet-container">
-  <button id="wallet-button">💰 Balance: €100</button>
-  <div id="wallet-dropdown" class="hidden">
-    <p><strong>Balance:</strong> €<span id="wallet-balance">100</span></p>
-    <p><strong>Transaction History:</strong></p>
-    <ul id="transaction-list"></ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Market & Inventory</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+
+  <div id="controls-container">
+    <div id="wallet-container">
+      <button id="wallet-button">💰 Balance: €100</button>
+      <div id="wallet-dropdown" class="hidden">
+        <p><strong>Balance:</strong> €<span id="wallet-balance">100</span></p>
+        <p><strong>Transaction History:</strong></p>
+        <ul id="transaction-list"></ul>
+        <div id="balance-graph">
+          <p style="text-align:center; padding-top: 80px; color: #999;">(Balance Graph Coming Soon)</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="inventory-container">
+      <button class="inventory-toggle" onclick="toggleInventory()">🗃️ Inventory</button>
+      <div id="inventory-list-wrapper" style="display: none;">
+        <ul id="inventory-list"></ul>
+      </div>
+    </div>
   </div>
-</div>
 
-<h1>🌍 Market Resources</h1>
-<div class="product-grid" id="productGrid"></div>
+  <h1>🌍 Market Resources</h1>
+  <div class="product-grid" id="productGrid"></div>
 
-<div id="inventory-container">
-  <h2>🗃️ Your Inventory</h2>
-  <ul id="inventory-list"></ul>
-</div>
+  <script>
+  const USER_ID = 'USER123'; // Replace with actual user logic
 
-<script>
-const USER_ID = 'USER123'; // Replace with actual user logic
-
-// Fetch and display products
-fetch('http://localhost:8080/api/products')
-  .then(res => res.json())
-  .then(data => {
-    const grid = document.getElementById('productGrid');
-    grid.innerHTML = '';
-    data.forEach(product => {
-      const div = document.createElement('div');
-      div.className = 'product';
-      console.log('Product ID:', product._id);
-
-      div.innerHTML = `
-        <h3>${product.name}</h3>
-        <p>${product.description}</p>
-        <p class="price">💰 $${product.price}</p>
-        <p class="qty">📦 ${product.quantity} in stock</p>
-        <button onclick="buyProduct('${product._id}')">🛒 Buy</button>
-      `;
-      grid.appendChild(div);
-    });
-  });
-
-// Fetch and display wallet
-function loadWallet() {
-  fetch(`http://localhost:8080/api/users/${USER_ID}/wallet`)
+  // Fetch and display products
+  fetch('http://localhost:8080/api/products')
     .then(res => res.json())
     .then(data => {
-      walletBtn.innerHTML = `💰 Balance: €${data.balance}`;
-      walletBalanceSpan.textContent = data.balance;
-      transactionList.innerHTML = '';
-      data.transactionHistory.slice().reverse().forEach((entry) => {
-        const li = document.createElement('li');
-        li.textContent = `${entry.type.toUpperCase()}: ${entry.product} (${entry.type === 'buy' ? '-' : '+'}€${entry.total})`;
-        transactionList.appendChild(li);
-      });
-    });
-}
-
-// Fetch and display inventory
-function loadInventory() {
-  fetch(`http://localhost:8080/api/users/${USER_ID}/inventory`)
-    .then(res => res.json())
-    .then(data => {
-      const inventoryList = document.getElementById('inventory-list');
-      inventoryList.innerHTML = '';
-      data.forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          ${item.product.name} - Qty: ${item.quantity}
-          <button onclick="sellProduct('${item.product._id}', 1)">Sell 1</button>
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '';
+      data.forEach(product => {
+        const div = document.createElement('div');
+        div.className = 'product';
+        div.innerHTML = `
+          <h3>${product.name}</h3>
+          <p>${product.description}</p>
+          <p class="price">💰 $${product.price}</p>
+          <p class="qty">📦 ${product.quantity} in stock</p>
+          <input type="number" min="1" max="${product.quantity}" value="1" id="qty-${product._id}" />
+          <button onclick="buyProduct('${product._id}')">🛒 Buy</button>
         `;
-        inventoryList.appendChild(li);
+        grid.appendChild(div);
       });
     });
-}
 
-// Buy product
-function buyProduct(productId) {
-  fetch(`http://localhost:8080/api/market/buy/${productId}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      userId: 'USER123',
-      quantity: 1
+  // Fetch and display wallet
+  function loadWallet() {
+    fetch(`http://localhost:8080/api/users/${USER_ID}/wallet`)
+      .then(res => res.json())
+      .then(data => {
+        walletBtn.innerHTML = `💰 Balance: €${data.balance}`;
+        walletBalanceSpan.textContent = data.balance;
+        transactionList.innerHTML = '';
+        data.transactionHistory.slice().reverse().forEach((entry) => {
+          const li = document.createElement('li');
+          li.textContent = `${entry.type.toUpperCase()}: ${entry.product} (${entry.type === 'buy' ? '-' : '+'}€${entry.total})`;
+          transactionList.appendChild(li);
+        });
+      });
+  }
+
+  // Fetch and display inventory
+  function loadInventory() {
+    fetch(`http://localhost:8080/api/users/${USER_ID}/inventory`)
+      .then(res => res.json())
+      .then(data => {
+        const inventoryList = document.getElementById('inventory-list');
+        inventoryList.innerHTML = '';
+        data.forEach(item => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            ${item.product.name} - Qty: ${item.quantity}
+            <button onclick="sellProduct('${item.product._id}', 1)">Sell 1</button>
+          `;
+          inventoryList.appendChild(li);
+        });
+      });
+  }
+
+  // Buy product
+  function buyProduct(productId) {
+    const qtyInput = document.getElementById(`qty-${productId}`);
+    const quantity = parseInt(qtyInput.value) || 1;
+
+    fetch(`http://localhost:8080/api/market/buy/${productId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: USER_ID,
+        quantity
+      })
     })
-  })
-  .then(res => res.json())
-  .then(data => console.log('✅ Bought:', data))
-  .catch(err => console.error('❌ Fetch error:', err));
-}
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert('Purchase successful!');
+        loadWallet();
+        loadInventory();
+      } else {
+        alert('Error: ' + (data.error || 'Unknown error'));
+      }
+    })
+    .catch(err => console.error('❌ Fetch error:', err));
+  }
 
+  // Sell product
+  function sellProduct(productId, quantity) {
+    fetch(`http://localhost:8080/api/market/sell/${productId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: USER_ID, quantity })
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.success ? 'Sold!' : data.error);
+      loadWallet();
+      loadInventory();
+    });
+  }
 
-// Sell product
-function sellProduct(productId, quantity) {
-  fetch(`http://localhost:8080/api/market/sell/${productId}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId: USER_ID, quantity })
-  })
-  .then(res => res.json())
-  .then(data => {
-    alert(data.success ? 'Sold!' : data.error);
-    loadWallet();
-    loadInventory();
+  // Wallet UI logic
+  const walletBtn = document.getElementById('wallet-button');
+  const walletDropdown = document.getElementById('wallet-dropdown');
+  const walletBalanceSpan = document.getElementById('wallet-balance');
+  const transactionList = document.getElementById('transaction-list');
+
+  walletBtn.addEventListener('click', () => {
+    walletDropdown.classList.toggle('show');
   });
-}
 
-// Wallet UI logic
-const walletBtn = document.getElementById('wallet-button');
-const walletDropdown = document.getElementById('wallet-dropdown');
-const walletBalanceSpan = document.getElementById('wallet-balance');
-const transactionList = document.getElementById('transaction-list');
-walletBtn.addEventListener('click', () => {
-  walletDropdown.classList.toggle('hidden');
-});
+  // Inventory toggle
+  function toggleInventory() {
+    const wrapper = document.getElementById('inventory-list-wrapper');
+    wrapper.style.display = wrapper.style.display === 'block' ? 'none' : 'block';
+  }
 
-// Initial load
-loadWallet();
-loadInventory();
-</script>
-<!-- ...existing code... -->
+  // Initial load
+  loadWallet();
+  loadInventory();
+  </script>
+
+</body>
+</html>
