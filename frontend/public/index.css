@@ -99,8 +99,24 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  transition: box-shadow 0.2s ease;
 }
 
+.product:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Product image */
+.product-img {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  margin-bottom: 0.8rem;
+}
+
+/* Product details */
 .product h3 {
   margin-top: 0;
 }

@@ -1,120 +1,58 @@
+// seed.js
+
 const mongoose = require('mongoose');
 const User = require('./models/User');
 const Product = require('./models/Product');
 require('dotenv').config();
 
 mongoose.connect(process.env.MONGO_URI).then(async () => {
-  // Clear existing data
-  await User.deleteMany();
-  await Product.deleteMany();
+  try {
+    // Clear existing data
+    await User.deleteMany();
+    await Product.deleteMany();
 
-  // Seed user
-  await User.create({
-    _id: 'USER123',
-    username: 'testuser',
-    balance: 100,
-    inventory: [],
-    transactionHistory: [],
-  });
+    // Seed user
+    await User.create({
+      _id: 'USER123',
+      username: 'testuser',
+      balance: 100,
+      inventory: [],
+      transactionHistory: [],
+    });
+    console.log('✅ User seeded');
 
-  // Seed products
-  await Product.insertMany([
-    {
-      name: "Gold Ore",
-      description: "Raw iron material.",
-      price: 9.12,
-      quantity: 100,
-      maxQuantity: 100,
-    },
-    {
-      name: "Wood",
-      description: "Timber for building or burning.",
-      price: 5,
-      quantity: 150,
-      maxQuantity: 150,
-    },
-    {
-      name: "Grain",
-      description: "Used for food and trade.",
-      price: 3,
-      quantity: 200,
-      maxQuantity: 200,
-    },
-    {
-      name: "Stone",
-      description: "Strong building material.",
-      price: 4.5,
-      quantity: 180,
-      maxQuantity: 180,
-    },
-    {
-      name: "Iron Ingot",
-      description: "Smelted iron ready for crafting.",
-      price: 15,
-      quantity: 75,
-      maxQuantity: 75,
-    },
-    {
-      name: "Coal",
-      description: "Fuel for smelting and heating.",
-      price: 7,
-      quantity: 120,
-      maxQuantity: 120,
-    },
-    {
-      name: "Leather",
-      description: "Material for clothing and armor.",
-      price: 10,
-      quantity: 90,
-      maxQuantity: 90,
-    },
-    {
-      name: "Cloth",
-      description: "Fabric for making garments.",
-      price: 6,
-      quantity: 130,
-      maxQuantity: 130,
-    },
-    {
-      name: "Fish",
-      description: "Fresh fish for food.",
-      price: 8,
-      quantity: 110,
-      maxQuantity: 110,
-    },
-    {
-      name: "Wheat",
-      description: "Basic grain used for bread.",
-      price: 2.5,
-      quantity: 210,
-      maxQuantity: 210,
-    },
-    {
-      name: "Copper Ore",
-      description: "Ore used to craft copper items.",
-      price: 8.5,
-      quantity: 85,
-      maxQuantity: 85,
-    },
-    {
-      name: "Silk",
-      description: "Luxury fabric for fine clothes.",
-      price: 20,
-      quantity: 50,
-      maxQuantity: 50,
-    },
-    {
-      name: "Honey",
-      description: "Sweetener and food ingredient.",
-      price: 12,
-      quantity: 60,
-      maxQuantity: 60,
-    }
-  ]);
+    // Define products
+    const products = [
+      { name: 'Gold Ore', description: 'Raw iron material.', price: 9.12, quantity: 100 },
+      { name: 'Wood', description: 'Timber for building or burning.', price: 5, quantity: 150 },
+      { name: 'Grain', description: 'Used for food and trade.', price: 3, quantity: 200 },
+      { name: 'Stone', description: 'Used for construction and tools.', price: 4.5, quantity: 120 },
+      { name: 'Coal', description: 'Fuel source for smelting and power.', price: 6.8, quantity: 80 },
+      { name: 'Iron Ore', description: 'Essential for forging metal tools.', price: 7.3, quantity: 110 },
+      { name: 'Clay', description: 'Used for pottery and construction.', price: 2.7, quantity: 90 },
+      { name: 'Salt', description: 'Preserves food and enhances flavor.', price: 1.5, quantity: 130 },
+      { name: 'Fish', description: 'Fresh food source.', price: 3.9, quantity: 70 },
+      { name: 'Leather', description: 'Used for crafting and armor.', price: 8.6, quantity: 60 },
+      { name: 'Wine', description: 'Luxury trade item.', price: 12, quantity: 40 },
+      { name: 'Honey', description: 'Sweet and long-lasting food.', price: 4.2, quantity: 100 },
+      { name: 'Herbs', description: 'Used in medicine and cooking.', price: 2.5, quantity: 140 },
+    ];
 
-  console.log('Database seeded successfully!');
-  process.exit();
+    // Add image field assuming images are in /images folder, named like goldore.jpg, etc.
+    const productsWithImages = products.map(p => ({
+      ...p,
+      image: `${p.name.toLowerCase().replace(/\s+/g, '')}.jpg`,
+    }));
+
+    await Product.insertMany(productsWithImages);
+    console.log('✅ Products seeded');
+
+    process.exit();
+  } catch (err) {
+    console.error('❌ Seed error:', err);
+    process.exit(1);
+  }
 }).catch(err => {
-  console.error('MongoDB connection error:', err);
+  console.error('❌ MongoDB connection failed:', err);
   process.exit(1);
 });

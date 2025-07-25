@@ -3,11 +3,16 @@ const app = express();
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
+
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+
 
 dotenv.config();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public'));
 
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
