@@ -12,14 +12,14 @@ mongoose.connect(process.env.MONGO_URI).then(async () => {
     await User.create({
       _id: 'USER123',
       username: 'testuser',
-      balance: 100,
+      balance: 200,
       inventory: [],
       transactionHistory: [],
     });
     console.log('✅ User seeded');
 
     const products = [
-      { name: 'Gold Ore', description: 'Raw iron material.', price: 9.12, quantity: 100 },
+      { name: 'Gold Ore', description: 'Raw gold material.', price: 10, quantity: 100 },
       { name: 'Wood', description: 'Timber for building or burning.', price: 5, quantity: 150 },
       { name: 'Grain', description: 'Used for food and trade.', price: 3, quantity: 200 },
       { name: 'Stone', description: 'Used for construction and tools.', price: 4.5, quantity: 120 },

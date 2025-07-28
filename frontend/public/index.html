@@ -58,59 +58,64 @@ fetch('http://localhost:8080/api/products')
             </div>
           </div>
           <div class="card-back" id="back-${product._id}">
-            <p>Click image to see price history</p>
+            <p>Click the card to see price history</p>
           </div>
         </div>
       `;
-      // Add click listener to flip & load graph
-      card.querySelector('img').addEventListener('click', () => showPriceHistory(product._id, card));
+
+      const cardInner = card.querySelector('.card-inner');
+
+      // Flip card on clicking anywhere except buttons and inputs
+      cardInner.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
+
+        card.classList.toggle('flipped');
+
+        if (card.classList.contains('flipped')) {
+          loadPriceHistory(product._id);
+        }
+      });
+
       grid.appendChild(card);
     });
   });
 
-// Function to fetch and display price history in card back
-function showPriceHistory(productId, card) {
-  // Toggle flip state
-  card.classList.toggle('flipped');
-  
-  // If card is now flipped (showing back), load the chart
-  if (card.classList.contains('flipped')) {
-    const back = document.getElementById(`back-${productId}`);
-    back.innerHTML = `<p>Loading price history...</p>`;
+// Load price history chart on the back of the card
+function loadPriceHistory(productId) {
+  const back = document.getElementById(`back-${productId}`);
+  back.innerHTML = `<p>Loading price history...</p>`;
 
-    fetch(`http://localhost:8080/api/market/price-history/${productId}`)
-      .then(res => res.json())
-      .then(history => {
-        if (!history.hasHistory) {
-          back.innerHTML = `<p>No price changes recorded yet.</p>`;
-          return;
+  fetch(`http://localhost:8080/api/market/price-history/${productId}`)
+    .then(res => res.json())
+    .then(history => {
+      if (!history.hasHistory) {
+        back.innerHTML = `<p>No price changes recorded yet.</p>`;
+        return;
+      }
+      back.innerHTML = `<canvas id="chart-${productId}"></canvas>`;
+      const ctx = document.getElementById(`chart-${productId}`).getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: history.data.map(h => new Date(h.timestamp).toLocaleDateString()),
+          datasets: [{
+            label: 'Price',
+            data: history.data.map(h => h.price),
+            borderColor: 'blue',
+            fill: false,
+            tension: 0.2
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false } },
+          scales: { x: { display: true }, y: { display: true } }
         }
-        // Create canvas for chart
-        back.innerHTML = `<canvas id="chart-${productId}"></canvas>`;
-        const ctx = document.getElementById(`chart-${productId}`).getContext('2d');
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: history.data.map(h => new Date(h.timestamp).toLocaleDateString()),
-            datasets: [{
-              label: 'Price',
-              data: history.data.map(h => h.price),
-              borderColor: 'blue',
-              fill: false,
-              tension: 0.2
-            }]
-          },
-          options: {
-            plugins: { legend: { display: false } },
-            scales: { x: { display: true }, y: { display: true } }
-          }
-        });
-      })
-      .catch(err => {
-        console.error('❌ Price history fetch error:', err);
-        back.innerHTML = `<p>Error loading price history.</p>`;
       });
-  }
+    })
+    .catch(err => {
+      console.error('❌ Price history fetch error:', err);
+      back.innerHTML = `<p>Error loading price history.</p>`;
+    });
 }
 
 // Wallet & Inventory functions remain unchanged
@@ -161,8 +166,7 @@ function buyProduct(productId) {
       alert('Purchase successful!');
       loadWallet();
       loadInventory();
-      // Refresh the product grid to update quantities
-      location.reload();
+      location.reload(); // Refresh product grid to update quantities
     } else {
       alert('Error: ' + (data.error || 'Unknown error'));
     }
@@ -180,8 +184,7 @@ function sellProduct(productId, quantity) {
     alert(data.success ? 'Sold!' : data.error);
     loadWallet();
     loadInventory();
-    // Refresh the product grid to update quantities
-    location.reload();
+    location.reload(); // Refresh product grid to update quantities
   });
 }
 
