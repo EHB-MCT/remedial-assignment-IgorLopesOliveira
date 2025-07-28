@@ -1,5 +1,4 @@
 // seed.js
-
 const mongoose = require('mongoose');
 const User = require('./models/User');
 const Product = require('./models/Product');
@@ -7,11 +6,9 @@ require('dotenv').config();
 
 mongoose.connect(process.env.MONGO_URI).then(async () => {
   try {
-    // Clear existing data
     await User.deleteMany();
     await Product.deleteMany();
 
-    // Seed user
     await User.create({
       _id: 'USER123',
       username: 'testuser',
@@ -21,7 +18,6 @@ mongoose.connect(process.env.MONGO_URI).then(async () => {
     });
     console.log('✅ User seeded');
 
-    // Define products
     const products = [
       { name: 'Gold Ore', description: 'Raw iron material.', price: 9.12, quantity: 100 },
       { name: 'Wood', description: 'Timber for building or burning.', price: 5, quantity: 150 },
@@ -38,14 +34,14 @@ mongoose.connect(process.env.MONGO_URI).then(async () => {
       { name: 'Herbs', description: 'Used in medicine and cooking.', price: 2.5, quantity: 140 },
     ];
 
-    // Add image field assuming images are in /images folder, named like goldore.jpg, etc.
     const productsWithImages = products.map(p => ({
       ...p,
-      image: `${p.name.toLowerCase().replace(/\s+/g, '')}.jpg`,
+      maxQuantity: p.quantity,  // ✅ add this
+      image: `${p.name.toLowerCase().replace(/\s+/g, '')}.jpg`, // ✅ keep images working
     }));
 
     await Product.insertMany(productsWithImages);
-    console.log('✅ Products seeded');
+    console.log('✅ Products seeded with maxQuantity and images');
 
     process.exit();
   } catch (err) {
