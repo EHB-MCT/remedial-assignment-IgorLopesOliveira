@@ -1,194 +1,294 @@
 /* General Reset */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 2rem;
-  background-color: #fafafa;
+  background-color: #f5f5f5;
   color: #333;
+  padding: 20px;
+  line-height: 1.4;
 }
 
-/* Controls container with wallet + inventory buttons side by side */
+/* Header */
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-size: 2.2em;
+  font-weight: 600;
+}
+
+/* Controls container */
 #controls-container {
   display: flex;
-  gap: 1rem;
-  align-items: center;
-  margin-bottom: 1.5rem;
+  gap: 15px;
+  margin-bottom: 25px;
+  justify-content: flex-start;
 }
 
-/* Buttons style */
+/* Button styling */
 #wallet-button,
 .inventory-toggle {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  padding: 10px 16px;
+  font-size: 14px;
   cursor: pointer;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background-color: #f0f0f0;
-  transition: background-color 0.3s ease;
-  min-width: 120px;
-  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
+  color: #333;
+  font-weight: 500;
 }
 
-#wallet-button:hover,
-.inventory-toggle:hover {
-  background-color: #ddd;
-}
-
-/* Positioning containers relative to allow dropdowns */
-#wallet-container, #inventory-container {
+/* Wallet and inventory containers */
+#wallet-container, 
+#inventory-container {
   position: relative;
 }
 
-/* Wallet dropdown styling */
-#wallet-dropdown {
-  display: none;
+/* Dropdown styling */
+#wallet-dropdown,
+#inventory-list-wrapper {
   position: absolute;
-  top: 110%;
+  top: 100%;
   left: 0;
-  width: 320px;
+  width: 300px;
   background: white;
   border: 1px solid #ddd;
-  padding: 1rem;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  border-radius: 6px;
-  max-height: 350px;
-  overflow-y: auto;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   z-index: 100;
+  margin-top: 5px;
 }
 
-/* Show class toggles dropdown visibility */
 #wallet-dropdown.show {
   display: block;
 }
 
-/* Inventory list wrapper styling */
-#inventory-list-wrapper {
+#wallet-dropdown.hidden {
   display: none;
-  position: absolute;
-  top: 110%;
-  left: 0;
-  width: 320px;
-  background: white;
-  border: 1px solid #ddd;
-  padding: 1rem;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  border-radius: 6px;
-  max-height: 350px;
+}
+
+/* Transaction list */
+#transaction-list {
+  list-style: none;
+  max-height: 200px;
   overflow-y: auto;
-  z-index: 100;
+  margin-top: 10px;
 }
 
-/* Product grid styling */
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-  gap: 1.2rem;
-  margin-bottom: 3rem;
-}
-
-/* Each product card */
-.product {
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  text-align: center;
-  transition: box-shadow 0.2s ease;
-}
-
-.product:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-/* Product image */
-.product-img {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
-  margin-bottom: 0.8rem;
-}
-
-/* Product details */
-.product h3 {
-  margin-top: 0;
-}
-
-.product p {
-  margin: 0.3rem 0;
-}
-
-.product .price {
-  font-weight: bold;
-  color: #2c7a7b;
-}
-
-.product .qty {
-  font-size: 0.9rem;
+#transaction-list li {
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
   color: #666;
-  margin-bottom: 0.8rem;
 }
 
-.product input[type="number"] {
-  width: 60px;
-  margin-bottom: 0.5rem;
-  padding: 0.3rem;
-  font-size: 1rem;
+/* Balance graph placeholder */
+#balance-graph {
+  height: 100px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.product button {
-  padding: 0.5rem;
-  background-color: #2c7a7b;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.product button:hover {
-  background-color: #285e61;
-}
-
-/* Inventory list styling */
+/* Inventory list */
 #inventory-list {
   list-style: none;
-  padding-left: 0;
-  margin: 0;
+  max-height: 250px;
+  overflow-y: auto;
 }
 
 #inventory-list li {
-  padding: 0.5rem 0;
+  padding: 8px 0;
   border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 14px;
 }
 
-#inventory-list li button {
-  padding: 0.3rem 0.7rem;
-  background-color: #c53030;
+#inventory-list button {
+  padding: 4px 8px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* Product grid */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Product cards */
+.product {
+  width: 100%;
+  height: 400px;
+  perspective: 1000px;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front, 
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Product content */
+.product-img {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+
+.product h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.product p {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+}
+
+.price {
+  font-size: 16px !important;
+  font-weight: bold !important;
+  color: #27ae60 !important;
+  margin: 8px 0 !important;
+}
+
+.qty {
+  color: #e74c3c !important;
+  font-weight: 500 !important;
+  margin-bottom: 15px !important;
+}
+
+/* Buy controls */
+.buy-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.buy-controls input {
+  width: 60px;
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.buy-controls button {
+  padding: 8px 12px;
+  background-color: #3498db;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
 }
 
-#inventory-list li button:hover {
-  background-color: #9b2c2c;
+/* Chart styling */
+canvas {
+  width: 200px !important;
+  height: 150px !important;
+  border-radius: 4px;
 }
 
-/* Balance graph placeholder */
-#balance-graph p {
-  font-style: italic;
-  font-size: 0.9rem;
+/* Responsive design */
+@media (max-width: 768px) {
+  body {
+    padding: 15px;
+  }
+  
+  .product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+  }
+  
+  .product {
+    height: 370px;
+  }
+  
+  #wallet-dropdown,
+  #inventory-list-wrapper {
+    width: 280px;
+  }
+  
+  h1 {
+    font-size: 1.8em;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  #controls-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  #wallet-dropdown,
+  #inventory-list-wrapper {
+    width: 100%;
+    position: static;
+    margin-top: 10px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  }
 }
