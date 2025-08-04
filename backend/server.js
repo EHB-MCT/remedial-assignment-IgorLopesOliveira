@@ -29,3 +29,8 @@ mongoose
     });
   })
   .catch((err) => console.error(err));
+
+// Catch-all 404 handler (for API routes)
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});

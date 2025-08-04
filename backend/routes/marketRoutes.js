@@ -192,4 +192,27 @@ router.post('/sell/:productId', async (req, res) => {
   }
 });
 
+// Get price history for a product
+router.get('/price-history/:productId', async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const history = await PriceChange.find({ productId }).sort({ timestamp: 1 });
+
+    if (!history || history.length === 0) {
+      return res.json({ hasHistory: false, data: [] });
+    }
+
+    // Return array with timestamp and price
+    const formatted = history.map(h => ({
+      timestamp: h.timestamp,
+      price: h.newPrice,
+    }));
+
+    res.json({ hasHistory: true, data: formatted });
+  } catch (err) {
+    console.error('Price history error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;
