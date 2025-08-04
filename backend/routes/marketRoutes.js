@@ -215,5 +215,4 @@ router.get('/price-history/:productId', async (req, res) => {
   }
 });
 
-
 module.exports = router;
