@@ -5,15 +5,16 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
 
-app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
-
-dotenv.config();
+dotenv.config()
 
 app.use(cors());
+
 app.use(express.json());
 app.use(express.static('public'));
 
+
+app.use('/images', express.static(path.join(__dirname, 'public/images')))
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/market', require('./routes/marketRoutes'));

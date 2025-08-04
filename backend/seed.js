@@ -19,19 +19,19 @@ mongoose.connect(process.env.MONGO_URI).then(async () => {
     console.log('✅ User seeded');
 
     const products = [
-      { name: 'Gold Ore', description: 'Raw iron material.', price: 9.12, quantity: 100 },
-      { name: 'Wood', description: 'Timber for building or burning.', price: 5, quantity: 150 },
-      { name: 'Grain', description: 'Used for food and trade.', price: 3, quantity: 200 },
-      { name: 'Stone', description: 'Used for construction and tools.', price: 4.5, quantity: 120 },
-      { name: 'Coal', description: 'Fuel source for smelting and power.', price: 6.8, quantity: 80 },
-      { name: 'Iron Ore', description: 'Essential for forging metal tools.', price: 7.3, quantity: 110 },
-      { name: 'Clay', description: 'Used for pottery and construction.', price: 2.7, quantity: 90 },
-      { name: 'Salt', description: 'Preserves food and enhances flavor.', price: 1.5, quantity: 130 },
-      { name: 'Fish', description: 'Fresh food source.', price: 3.9, quantity: 70 },
-      { name: 'Leather', description: 'Used for crafting and armor.', price: 8.6, quantity: 60 },
-      { name: 'Wine', description: 'Luxury trade item.', price: 12, quantity: 40 },
-      { name: 'Honey', description: 'Sweet and long-lasting food.', price: 4.2, quantity: 100 },
-      { name: 'Herbs', description: 'Used in medicine and cooking.', price: 2.5, quantity: 140 },
+      { name: 'Gold Ore', description: 'Raw iron material.', price: 9.12, quantity: 10 },
+      { name: 'Wood', description: 'Timber for building or burning.', price: 5, quantity: 15 },
+      { name: 'Grain', description: 'Used for food and trade.', price: 3, quantity: 20 },
+      { name: 'Stone', description: 'Used for construction and tools.', price: 4.5, quantity: 12 },
+      { name: 'Coal', description: 'Fuel source for smelting and power.', price: 6.8, quantity: 8 },
+      { name: 'Iron Ore', description: 'Essential for forging metal tools.', price: 7.3, quantity: 11 },
+      { name: 'Clay', description: 'Used for pottery and construction.', price: 2.7, quantity: 9 },
+      { name: 'Salt', description: 'Preserves food and enhances flavor.', price: 1.5, quantity: 13},
+      { name: 'Fish', description: 'Fresh food source.', price: 3.9, quantity: 7 },
+      { name: 'Leather', description: 'Used for crafting and armor.', price: 8.6, quantity: 6 },
+      { name: 'Wine', description: 'Luxury trade item.', price: 12, quantity: 4 },
+      { name: 'Honey', description: 'Sweet and long-lasting food.', price: 4.2, quantity: 10 },
+      { name: 'Herbs', description: 'Used in medicine and cooking.', price: 2.5, quantity: 14 },
     ];
 
     const productsWithImages = products.map(p => ({
